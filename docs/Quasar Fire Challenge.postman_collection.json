@@ -1,0 +1,55 @@
+{
+	"info": {
+		"_postman_id": "bfd27e2e-6066-476a-a67b-17801b78ccaa",
+		"name": "Quasar Fire Challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7838868"
+	},
+	"item": [
+		{
+			"name": "gcpService",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-common",
+						"value": "l1b3rt4d"
+					},
+					{
+						"key": "X-star",
+						"value": "Alderaan"
+					},
+					{
+						"key": "X-user-id",
+						"value": "12asec",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"satellites\": [\r\n        {\r\n            \"name\": \"kenobi\",\r\n            \"distance\": 100.0,\r\n            \"message\": [\r\n                \"este\",\r\n                \"\",\r\n                \"\",\r\n                \"mensaje\",\r\n                \"\"\r\n            ]\r\n        },\r\n        {\r\n            \"name\": \"skywalker\",\r\n            \"distance\": 115.5,\r\n            \"message\": [\r\n                \"\",\r\n                \"es\",\r\n                \"\",\r\n                \"\",\r\n                \"secreto\"\r\n            ]\r\n        },\r\n        {\r\n            \"name\": \"sato\",\r\n            \"distance\": 142.7,\r\n            \"message\": [\r\n                \"este\",\r\n                \"\",\r\n                \"un\",\r\n                \"\",\r\n                \"\"\r\n            ]\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://challenge-u5rbmpvxzq-uk.a.run.app/topsecret/",
+					"protocol": "https",
+					"host": [
+						"challenge-u5rbmpvxzq-uk",
+						"a",
+						"run",
+						"app"
+					],
+					"path": [
+						"topsecret",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -19,7 +19,7 @@ public class ProcessRequestServiceImp implements ProcessRequestService {
     }
 
     /**
-     * Funcion que procesa request del aliado para obtener ubicacion y mensajeria secreta
+     * Funcion que procesa request para obtener ubicacion y mensajeria secreta
      * @param alianzaRequestDtoIn request del emisor con formato acordado
      * @return AlianzaResponseDto
      * @throws meli.rasec.app.exception.QuasarFireException Excepcion cuando hay problemas para obtener ubicacion y mensaje secreto

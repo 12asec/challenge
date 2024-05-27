@@ -1,0 +1,175 @@
+openapi: 3.0.3
+info:
+  title: Quasar Fire Challenge
+  description: |-
+    Challenge para Mercado Libre
+  contact:
+    email: cesarnt@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+servers:
+  - url: https://challenge-u5rbmpvxzq-uk.a.run.app
+
+paths:
+  /topsecret:
+    post:
+      summary: Descifra ubicacion y mensajeria secreta
+      description: Descifra ubicacion y mensajeria secreta
+      parameters:
+          - in: header
+            name: X-common
+            description: Parametro que representa un token que debe ser conocido por el emisor y el receptor
+            required: true
+            schema:
+              type: string
+              example: "l1b3rt4d"
+          - in: header
+            name: X-star
+            description: Parametro de la estrella de origen de la nave
+            required: true
+            schema:
+              type: string
+              example: "Alderaan"
+      requestBody:
+        description: Solicitud de descifrado de mensaje con toda la data necesaria
+
+        
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlianzaRequestDto'
+        required: true
+      responses:
+        '200':
+          description: Descifrado exitoso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlianzaResponseDto'
+        '400':
+          description: Cuando la request no tiene estructura valida
+        '500':
+          description: Error interno del servidor
+
+  /topsecret_split/:
+    get:
+      summary: Descifra ubicacion y mensajeria secreta a partir de las multiples peticiones de los satelites
+      description: Descifra ubicacion y mensajeria secreta a partir de las multiples peticiones de los satelites
+      parameters:
+        - in: header
+          name: X-common
+          description: Parametro que representa un token que debe ser conocido por el emisor y el receptor
+          schema:
+            type: string
+            example: "l1b3rt4d"
+          required: true
+        - in: header
+          name: X-star
+          description: Parametro de la estrella de origen de la nave
+          schema:
+            type: string
+            example: "Alderaan"
+          required: true
+      responses:
+        '200':
+          description: Descifrado exitoso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlianzaResponseDto'
+        '400':
+          description: Cuando la request no tiene estructura valida
+        '500':
+          description: Error interno del servidor
+
+  /topsecret_split/{satelliteName}:
+    post:
+
+      summary: Envia un mensaje de un satelite particular
+      description: Envia un mensaje de un satelite particular
+      parameters:
+        - name: satelliteName
+          in: path
+          description: Nombre de satelite que envia el mensaje, kenobi,sato o swywalker
+          schema:
+            type: string
+          required: true
+        - in: header
+          name: X-common
+          description: Parametro que representa un token que debe ser conocido por el emisor y el receptor
+          schema:
+            type: string
+            example: "l1b3rt4d"
+          required: true
+        - in: header
+          name: X-star
+          description: Parametro de la estrella de origen de la nave
+          schema:
+            type: string
+            example: "Alderaan"
+          required: true
+      requestBody:
+        description: Solicitud de descifrado de mensaje con toda la data necesaria
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SatelliteSplitDto'
+        required: true
+
+      responses:
+        '200':
+          description: Registro de data exitoso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlianzaResponseDto'
+        '400':
+          description: Cuando la request no tiene estructura valida
+        '500':
+          description: Error interno del servidor
+
+components:
+  schemas:
+    AlianzaRequestDto:
+      type: object
+      properties:
+        satellites:
+          type: array
+          items:
+            $ref: '#/components/schemas/SatelliteDto'
+
+    SatelliteDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'Kenobi'
+        distance:
+          type: number
+          format: float
+          example: 100.0
+        message:
+          type: array
+          items:
+            type: string
+    AlianzaResponseDto:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "es un mensaje secreto"
+        position:
+          $ref: '#/components/schemas/PositionDto'
+    PositionDto:
+      type: object
+      properties:
+        x:
+          type: number
+          format: float
+          example: 100.0
+        y:
+          type: number
+          format: float
+          example: 100.0
