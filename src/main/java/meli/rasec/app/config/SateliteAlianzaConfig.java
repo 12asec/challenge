@@ -1,45 +1,35 @@
 package meli.rasec.app.config;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Setter;
+import meli.rasec.app.dto.InitConfigDto;
+import meli.rasec.app.dto.LocationDto;
 import meli.rasec.app.dto.SateliteDto;
 import meli.rasec.app.exception.QuasarFireException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 
 import static meli.rasec.app.Application.*;
 
+@Component
 @Configuration
+@Setter
 public class SateliteAlianzaConfig {
 
     /**
-     * Variable de entorno de la posicion en la galaxia del satelite Skywalker.
+     * Variable de entorno de la posicion en la galaxia de los satelites de la alianza Kenobi, Skywalker y Sato.
      *
      * @author <a href="mailto:cesarnt@gmail.com">Cesar Nunez T</a>
      * @version 1.0
      */
-    @Value("${quasarfire.init.location.skywalker}")
-    private static List<Integer> locationInitSky;
-
-    /**
-     * Variable de entorno de la posicion en la galaxia del satelite Kenobi.
-     *
-     * @author <a href="mailto:cesarnt@gmail.com">Cesar Nunez T</a>
-     * @version 1.0
-     */
-    @Value("${quasarfire.init.location.kenobi}")
-    private static List<Integer> locationInitKenobi;
-
-    /**
-     * Variable de entorno de la posicion en la galaxia del satelite Sato.
-     *
-     * @author <a href="mailto:cesarnt@gmail.com">Cesar Nunez T</a>
-     * @version 1.0
-     */
-    @Value("${quasarfire.init.location.sato}")
-    private static List<Integer> locationInitSato;
+    @Value("${quasarfire.init.location}")
+    private String satelitesConfig;
 
     /**
      * Funcion que retorna la posicion inicial de los satelites de la alianza, para obtencion de la ubicacion.
@@ -51,50 +41,39 @@ public class SateliteAlianzaConfig {
      */
 
 
-    public static List<SateliteDto> getInitLocations() throws QuasarFireException {
+    public List<SateliteDto> getInitLocations() throws QuasarFireException {
 
         try {
-            if (locationInitKenobi == null || locationInitKenobi.isEmpty()) {
-                throw new QuasarFireException("Se debe configurar ubicacion inicial del satelite Kenobi.");
+
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+            InitConfigDto satelitesInit = mapper.readValue(satelitesConfig, InitConfigDto.class);
+
+            if(satelitesInit.getSatelites()!=null) {
+                if(satelitesInit.getSatelites().size() == 3) {
+                    satelitesInit.getSatelites().forEach(satelite -> {
+
+                        String nombre = satelite.getName();
+
+                        if (satelite.getLocation() == null) {
+                            try {
+                                throw new QuasarFireException("Se debe configurar ubicacion inicial del satelite " + nombre);
+                            } catch (QuasarFireException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+
+                    });
+                } else {
+                    throw new QuasarFireException("Se debe configurar ubicacion inicial de los 3 satelites iniciales");
+                }
+            } else {
+                throw new QuasarFireException("Se debe configurar ubicacion inicial de satelites Kenobi, Skywalker y Sato.");
             }
 
-            if (locationInitSky == null || locationInitSky.isEmpty()) {
-                throw new QuasarFireException("Se debe configurar ubicacion inicial del satelite Skywalker.");
-            }
-
-            if (locationInitSato == null || locationInitSato.isEmpty()) {
-                throw new QuasarFireException("Se debe configurar ubicacion inicial del satelite Sato.");
-            }
-
-            if (locationInitKenobi.size() > 2 ) {
-                throw new QuasarFireException("Ubicacion inicial de Kenobi posee mas de 2 ejes.");
-            }
-
-            if (locationInitKenobi.size() < 2 ) {
-                throw new QuasarFireException("Ubicacion inicial de Kenobi posee solo 1 eje.");
-            }
-
-            if (locationInitSky.size() > 2 ) {
-                throw new QuasarFireException("Ubicacion inicial de Skywalker posee mas de 2 ejes.");
-            }
-
-            if (locationInitSky.size() < 2 ) {
-                throw new QuasarFireException("Ubicacion inicial de Skywalker posee solo 1 eje.");
-            }
-
-            if (locationInitSato.size() > 2 ) {
-                throw new QuasarFireException("Ubicacion inicial de Sato posee mas de 2 ejes.");
-            }
-
-            if (locationInitSato.size() < 2 ) {
-                throw new QuasarFireException("Ubicacion inicial de Sato posee solo 1 eje.");
-            }
-
-            List<SateliteDto> salida = new ArrayList<SateliteDto>();
-            salida.add(new SateliteDto(KENOBI_NAME, locationInitKenobi.get(0), locationInitKenobi.get(1)));
-            salida.add(new SateliteDto(SKYWALKER_NAME, locationInitSky.get(0), locationInitSky.get(1)));
-            salida.add(new SateliteDto(SATO_NAME, locationInitSato.get(0), locationInitSato.get(1)));
-            return salida;
+            return satelitesInit.getSatelites();
 
         } catch (Exception ex) {
             throw new QuasarFireException(ex.getMessage());

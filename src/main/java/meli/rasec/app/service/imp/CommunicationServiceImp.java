@@ -2,9 +2,6 @@ package meli.rasec.app.service.imp;
 
 import com.lemmingapex.trilateration.NonLinearLeastSquaresSolver;
 import com.lemmingapex.trilateration.TrilaterationFunction;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import meli.rasec.app.config.SateliteAlianzaConfig;
 import meli.rasec.app.dto.SateliteDto;
 import meli.rasec.app.exception.QuasarFireException;
@@ -12,7 +9,7 @@ import meli.rasec.app.service.CommunicationService;
 import meli.rasec.app.util.NumberUtils;
 import org.apache.commons.math3.fitting.leastsquares.LeastSquaresOptimizer;
 import org.apache.commons.math3.fitting.leastsquares.LevenbergMarquardtOptimizer;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,10 +27,13 @@ import static meli.rasec.app.Application.SATELITES_FALTANTES;
  *
  * */
 @Service
-@AllArgsConstructor
-@NoArgsConstructor
+@Component
 public class CommunicationServiceImp implements CommunicationService {
 
+    SateliteAlianzaConfig sateliteAlianzaConfig;
+    public CommunicationServiceImp(SateliteAlianzaConfig sateliteAlianzaConfigIn){
+        this.sateliteAlianzaConfig = sateliteAlianzaConfigIn;
+    }
     /**
      * Metodo que retorna la posicion en la galaxia de un aliado, basado en la triangulacion de satelites.
      * @param distances distancias a la que se encuentra el emisor a cada satelite de la Alianza.
@@ -49,9 +49,9 @@ public class CommunicationServiceImp implements CommunicationService {
                 throw new QuasarFireException(SATELITES_FALTANTES);
             }
 
-            List<SateliteDto> satelitesAlianza = SateliteAlianzaConfig.getInitLocations();
+            List<SateliteDto> satelitesAlianza = sateliteAlianzaConfig.getInitLocations();
 
-            double[][] positions = satelitesAlianza.stream().map(s-> new double[]{s.getX(),s.getY()})
+            double[][] positions = satelitesAlianza.stream().map(s-> new double[]{s.getLocation().getX(),s.getLocation().getY()})
                     .toList().toArray(new double[0][0]);
 
             NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(
