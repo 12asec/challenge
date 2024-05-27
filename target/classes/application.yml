@@ -1,7 +1,13 @@
 spring:
   profiles:
     active: ${ENV}
+  validate:
+    republic: ${COMMON_REPUBLIC}
+    stars: ${STARS}
 
 quasarfire:
   init:
     location: ${LOCATION_INIT}
+
+server:
+  port: ${SERVER_PORT:8080}

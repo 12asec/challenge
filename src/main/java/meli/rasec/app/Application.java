@@ -42,20 +42,7 @@ public class Application{
     public static void main (String[] args){
 
         SpringApplication.run(Application.class, args);
-        SateliteAlianzaConfig config = new SateliteAlianzaConfig();
-        config.setSatelitesConfig("{\"satelites\":[{\"name\": \"KENOBI\",\"location\": {\"x\": -500,\"y\": -200}},{\"name\":\"SKYWALKER\",\"location\":{\"x\":100,\"y\":-100}},{\"name\":\"SATO\",\"location\":{\"x\":500,\"y\":100}}]}");
-        CommunicationServiceImp service = new CommunicationServiceImp(config);
-        try{
-            float[] result = service.getLocation(500,200,100);
-            log.info("Tu ubicacion es: [" + result[0] + "," + result[1] + "]");
-            String[] mensajito0 = {"Holanda", "", "talca", ""};
-            String[] mensajito1 = {"", "que", "", ""};
-            String[] mensajito2 = {"", "", "talca", "comoandamio"};
-            String mensajeSecreto = service.getMessage(mensajito0,mensajito1,mensajito2);
-            log.info("El mensaje completo es: " + mensajeSecreto);
-        } catch (QuasarFireException ex) {
-            log.info("QuasarFireException: " + ex.getMessage());
-        }
+
     }
 }
 
